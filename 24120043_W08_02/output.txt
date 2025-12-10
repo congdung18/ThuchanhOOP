@@ -1,8 +1,0 @@
---- Danh sach nhan vien ---
-1: Tran Van A (Tp Ho Chi Minh)
-2: Nguyen Thi B (Tp Ho Chi Minh)
-3: Le Van C (Tp Ha Noi)
-4: Pham Van D (Tp Hai Phong)
-5: Tran Thi E (Long An)
-6: Ngo Van F (Tp Ho Chi Minh)
-7: Phan Thi G (Can Tho)

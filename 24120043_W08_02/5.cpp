@@ -4,235 +4,175 @@
 
 using namespace std;
 
-class Hinh
-{
+class Hinh {
 public:
-    virtual ~Hinh() {};
+    virtual ~Hinh() {}
+    virtual void print(ostream& os) const = 0;
+
+    friend ostream& operator<<(ostream& os, const Hinh& h) {
+        h.print(os);
+        return os;
+    }
 };
 
-class HinhHocPhang : public Hinh
-{
+class HinhHocPhang : public Hinh {
 protected:
-    float _chuVi, _dienTich;
+    float _chuVi{}, _dienTich{};
 
 public:
-    friend ostream &operator<<(ostream &, const HinhHocPhang &);
-    virtual ~HinhHocPhang() {};
+    virtual ~HinhHocPhang() {}
+
+    void print(ostream& os) const override {
+        os << "[P = " << _chuVi << ", S = " << _dienTich << "]";
+    }
 };
 
-ostream &operator<<(ostream &os, const HinhHocPhang &hhp)
-{
-    os << "[P = " << hhp._chuVi << ", S = " << hhp._dienTich << "]";
-    return os;
-}
-
-class HinhTron : public HinhHocPhang
-{
-private:
-    int _banKinh;
-
-public:
-    HinhTron(const float &);
-    friend ostream &operator<<(ostream &, const HinhTron &);
-};
-
-HinhTron::HinhTron(const float &bk) : _banKinh(bk)
-{
-    _chuVi = 2 * bk * 3.14;
-    _dienTich = 3.14 * bk * bk;
-}
-
-ostream &operator<<(ostream &os, const HinhTron &ht)
-{
-    os << "Hinh Tron ";
-    os << (HinhHocPhang)ht;
-
-    return os;
-}
-
-class HinhTamGiacDeu : public HinhHocPhang
-{
-private:
-    float _canh;
-
-public:
-    HinhTamGiacDeu(const float &);
-    friend ostream &operator<<(ostream &, const HinhTamGiacDeu &);
-};
-
-HinhTamGiacDeu::HinhTamGiacDeu(const float &f) : _canh(f)
-{
-    _chuVi = 3 * f;
-    _dienTich = sqrt(3) / 2 * f * f;
-}
-
-ostream &operator<<(ostream &os, const HinhTamGiacDeu &htgd)
-{
-    os << "Hinh Tam Giac Deu ";
-    os << (HinhHocPhang)htgd;
-
-    return os;
-}
-
-class HinhChuNhat : public HinhHocPhang
-{
-private:
-    float _cdai, _crong;
-
-public:
-    HinhChuNhat(const float &, const float &);
-    friend ostream &operator<<(ostream &, const HinhChuNhat &);
-};
-
-HinhChuNhat::HinhChuNhat(const float &f1, const float &f2) : _cdai(f1), _crong(f2)
-{
-    _chuVi = (f1 + f2) * 2;
-    _dienTich = f1 * f2;
-}
-
-ostream &operator<<(ostream &os, const HinhChuNhat &hcn)
-{
-    os << "Hinh Chu Nhat ";
-    os << (HinhChuNhat)hcn;
-
-    return os;
-}
-
-class HinhHoc3Chieu : public Hinh
-{
-protected:
-    float _dtXQ, _theTich;
-
-public:
-    friend ostream &operator<<(ostream &, const HinhHoc3Chieu &);
-    virtual ~HinhHoc3Chieu() {};
-};
-
-ostream &operator<<(ostream &os, const HinhHoc3Chieu &hh3c)
-{
-    os << "[Sxq = " << hh3c._dtXQ << ", V = " << hh3c._theTich << "]";
-    return os;
-}
-
-class HinhCau : public HinhHoc3Chieu
-{
-private:
+class HinhTron : public HinhHocPhang {
     float _banKinh;
 
 public:
-    HinhCau(const float &);
-    friend ostream &operator<<(ostream &, const HinhCau &);
+    HinhTron(float bk) : _banKinh(bk) {
+        _chuVi = 2 * 3.14 * bk;
+        _dienTich = 3.14 * bk * bk;
+    }
+
+    void print(ostream& os) const override {
+        os << "Hinh Tron ";
+        HinhHocPhang::print(os);
+    }
 };
 
-HinhCau::HinhCau(const float &f) : _banKinh(f)
-{
-    _dtXQ = 4 * 3.14 * f * f;
-    _theTich = 4 / 3 * 3.14 * f * f * f;
-}
-
-ostream &operator<<(ostream &os, const HinhCau &hc)
-{
-    os << "Hinh Cau ";
-    os << (HinhHoc3Chieu)hc;
-
-    return os;
-}
-
-class HinhLapPhuong : public HinhHoc3Chieu
-{
-private:
+class HinhTamGiacDeu : public HinhHocPhang {
     float _canh;
 
 public:
-    HinhLapPhuong(const float &);
-    friend ostream &operator<<(ostream &, const HinhLapPhuong &);
+    HinhTamGiacDeu(float f) : _canh(f) {
+        _chuVi = 3 * f;
+        _dienTich = sqrt(3) / 2 * f * f;
+    }
+
+    void print(ostream& os) const override {
+        os << "Hinh Tam Giac Deu ";
+        HinhHocPhang::print(os);
+    }
 };
 
-HinhLapPhuong::HinhLapPhuong(const float &f) : _canh(f)
-{
-    _dtXQ = 4 * f * f;
-    _theTich = f * f * f;
-}
+class HinhChuNhat : public HinhHocPhang {
+    float _cdai, _crong;
 
-ostream &operator<<(ostream &os, const HinhLapPhuong &hlp)
-{
-    os << "Hinh Lap Phuong ";
-    os << (HinhHoc3Chieu)hlp;
+public:
+    HinhChuNhat(float d, float r) : _cdai(d), _crong(r) {
+        _chuVi = 2 * (d + r);
+        _dienTich = d * r;
+    }
 
-    return os;
-}
+    void print(ostream& os) const override {
+        os << "Hinh Chu Nhat ";
+        HinhHocPhang::print(os);
+    }
+};
 
-class HinhHop : public HinhHoc3Chieu
-{
-private:
+class HinhVuong : public HinhHocPhang {
+    float _canh;
+
+public:
+    HinhVuong(float f) : _canh(f) {
+        _chuVi = 4 * f;
+        _dienTich = f * f;
+    }
+
+    void print(ostream& os) const override {
+        os << "Hinh Vuong ";
+        HinhHocPhang::print(os);
+    }
+};
+
+class HinhHoc3Chieu : public Hinh {
+protected:
+    float _dtXQ{}, _theTich{};
+
+public:
+    virtual ~HinhHoc3Chieu() {}
+
+    void print(ostream& os) const override {
+        os << "[Sxq = " << _dtXQ << ", V = " << _theTich << "]";
+    }
+};
+
+class HinhCau : public HinhHoc3Chieu {
+    float _banKinh;
+
+public:
+    HinhCau(float r) : _banKinh(r) {
+        _dtXQ = 4 * 3.14 * r * r;
+        _theTich = (4.0f / 3.0f) * 3.14 * r * r * r;
+    }
+
+    void print(ostream& os) const override {
+        os << "Hinh Cau ";
+        HinhHoc3Chieu::print(os);
+    }
+};
+
+class HinhLapPhuong : public HinhHoc3Chieu {
+    float _canh;
+
+public:
+    HinhLapPhuong(float f) : _canh(f) {
+        _dtXQ = 4 * f * f;
+        _theTich = f * f * f;
+    }
+
+    void print(ostream& os) const override {
+        os << "Hinh Lap Phuong ";
+        HinhHoc3Chieu::print(os);
+    }
+};
+
+class HinhHop : public HinhHoc3Chieu {
     float _c1, _c2, _c3;
 
 public:
-    HinhHop(const float &, const float &, const float &);
-    friend ostream &operator<<(ostream &, const HinhHop &);
+    HinhHop(float a, float b, float c) : _c1(a), _c2(b), _c3(c) {
+        _dtXQ = 4 * a * b;
+        _theTich = a * b * c;
+    }
+
+    void print(ostream& os) const override {
+        os << "Hinh Hop ";
+        HinhHoc3Chieu::print(os);
+    }
 };
 
-HinhHop::HinhHop(const float &f1, const float &f2, const float &f3) : _c1(f1), _c2(f2), _c3(f3)
-{
-    _dtXQ = 4 * f1 * f2;
-    _theTich = f1 * f2 * f3;
-}
-
-ostream &operator<<(ostream &os, const HinhHop &hh)
-{
-    os << "Hinh Hop ";
-    os << (HinhHoc3Chieu)hh;
-
-    return os;
-}
-
-class HinhTru : public HinhHoc3Chieu
-{
-private:
+class HinhTru : public HinhHoc3Chieu {
     float _bk, _cao;
 
 public:
-    HinhTru(const float &, const float &);
-    friend ostream &operator<<(ostream &, const HinhTru &);
+    HinhTru(float r, float h) : _bk(r), _cao(h) {
+        _dtXQ = 2 * 3.14 * r * h;
+        _theTich = 3.14 * r * r * h;
+    }
+
+    void print(ostream& os) const override {
+        os << "Hinh Tru ";
+        HinhHoc3Chieu::print(os);
+    }
 };
 
-HinhTru::HinhTru(const float &bk, const float &c) : _bk(bk), _cao(c)
-{
-    _dtXQ = 2 * c * 3.14 * bk;
-    _theTich = bk * bk * 3.14 * c;
-}
-
-ostream &operator<<(ostream &os, const HinhTru &ht)
-{
-    os << "Hinh Tru ";
-    os << (HinhHoc3Chieu)ht;
-
-    return os;
-}
-
-class HinhNon : public HinhHoc3Chieu
-{
-private:
+class HinhNon : public HinhHoc3Chieu {
     float _bk, _c;
 
 public:
-    HinhNon(const float &f1, const float &f2);
-    friend ostream &operator<<(ostream &, const HinhNon &);
+    HinhNon(float r, float h) : _bk(r), _c(h) {
+        _dtXQ = 3.14 * r * sqrt(r * r + h * h);
+        _theTich = (1.0f / 3.0f) * 3.14 * r * r * h;
+    }
+
+    void print(ostream& os) const override {
+        os << "Hinh Non ";
+        HinhHoc3Chieu::print(os);
+    }
 };
-
-HinhNon::HinhNon(const float &f1, const float &f2) : _bk(f1), _c(f2)
-{
-    _dtXQ = 3.14 * _bk * sqrt(_bk * _bk + _c * _c);
-    _theTich = 1 / 3 * 3.14 * _bk * _bk * _c;
-}
-
-ostream &operator<<(ostream &os, const HinhNon &hn)
-{
-    os << "Hinh Non ";
-    os << (HinhHoc3Chieu)hn;
-
-    return os;
-}
 
 int main()
 {
@@ -242,4 +182,16 @@ int main()
     dsHinh.push_back(new HinhChuNhat(3.7, 1.9));
     dsHinh.push_back(new HinhVuong(4.1));
     dsHinh.push_back(new HinhCau(13.5));
+    dsHinh.push_back(new HinhLapPhuong(2.9));
+    dsHinh.push_back(new HinhHop(1.2, 3.7, 6.3));
+    dsHinh.push_back(new HinhTru(6.1, 4.9));
+    dsHinh.push_back(new HinhNon(8.7, 3.2));
+
+    for (int i = 0; i < dsHinh.size(); i++){
+        cout << *dsHinh[i] << endl;
+    }
+
+    cout << endl << endl;
+    system("pause");
+    return 0;
 }
