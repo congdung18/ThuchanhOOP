@@ -1,218 +1,163 @@
-#include <iostream> 
-#include <fstream> 
-#include <string> 
-#include <vector> 
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
 
-using namespace std; 
+using namespace std;
 
-class NhanVien{ 
-    protected: 
-    string _hoTen, _diaChi; 
-
-    public: 
-    friend istream &operator>>(istream&, NhanVien&); 
-    friend ostream &operator<<(ostream&, const NhanVien&); 
-}; 
-
-istream &operator>>(istream& is, NhanVien& nv){ 
-    // streampos start = is.tellg();
-
-    string line; 
-    getline(is, line); 
-
-    int posOpen = line.find('(');
-    int posClose = line.find(')');
-    int posColon = line.find(':');
-
-    nv._hoTen = line.substr(posColon + 2, posOpen - posColon - 3); 
-    nv._diaChi = line.substr(posOpen + 1, posClose - posOpen - 1);
-
-    // is.seekg(start);
-
-    return is; 
-} 
-
-ostream &operator<<(ostream& os, const NhanVien& nv){ 
-    os << nv._hoTen << " (" << nv._diaChi << ")"; return os; 
-} 
-
-class NhanVienThuKy: public NhanVien{ 
-    private: 
-    string _ccnn; 
-    int _baoCao; 
-
-    public: 
-    friend istream &operator>>(istream&, NhanVienThuKy&);
-    friend ostream &operator<<(ostream&, const NhanVienThuKy&);
-    int layBaoCao();
+class NhanVien
+{
+protected:
+    string _hoTen, _diaChi;
 };
 
-int NhanVienThuKy::layBaoCao(){
-    return _baoCao;
-}
+class NhanVienThuKy : public NhanVien
+{
+private:
+    string _ccnn;
+    int _baoCao;
 
-istream &operator>>(istream& is, NhanVienThuKy& nv){
-    // streampos start = is.tellg();
-
-    string line; 
-    getline(is, line);
-
-    int pos1 = line.find('['); 
-    int pos2 = line.find(']');
-    nv._ccnn = line.substr(pos1 + 1, pos2 - pos1 - 1); 
-
-    int pos3 = line.find('<');
-    int pos4 = line.find('>'); 
-    nv._baoCao = stoi(line.substr(pos3 + 1, pos4 - pos3 - 1));
-
-    // is.seekg(start);
-
-    return is; 
-} 
-
-ostream &operator<<(ostream& os, const NhanVienThuKy& nv){ 
-    os << (NhanVien&)nv << " | CCNN: " << nv._ccnn << " | Bao cao: " << nv._baoCao; 
-    return os; 
-} 
-
-class NhanVienKyThuat : public NhanVien{ 
-    private: 
-    string _ccn; 
-    int _sangKien; 
-    
-    public: 
-    friend istream &operator>>(istream&, NhanVienKyThuat&); 
-    friend ostream &operator<<(ostream&, const NhanVienKyThuat&);
-    int laySangKien();
+public:
+    friend istream &operator>>(istream &, NhanVienThuKy &);
+    friend ostream &operator<<(ostream &, const NhanVienThuKy &);
 };
 
-int NhanVienKyThuat::laySangKien(){
-    return _sangKien;
+istream &operator>>(istream &is, NhanVienThuKy &nvtk)
+{
+    cout << "Nhap ho va ten: ";
+    is >> nvtk._hoTen;
+    cout << "Nhap dia chi: ";
+    is >> nvtk._diaChi;
+    cout << "Nhap loai chung chi ngoai ngu: ";
+    is >> nvtk._ccnn;
+    cout << "Nhap so bao cao da hoan thanh: ";
+    is >> nvtk._baoCao;
+
+    return is;
 }
 
-istream &operator>>(istream& is, NhanVienKyThuat& nv){
-    // streampos start = is.tellg();
+ostream &operator<<(ostream &os, const NhanVienThuKy &nvtk)
+{
+    os << nvtk._hoTen << " " << nvtk._diaChi << " " << nvtk._ccnn << " " << nvtk._baoCao << endl;
 
-    string line; 
-    getline(is, line);
+    return os;
+}
 
-    int pos1 = line.find('['); 
-    int pos2 = line.find(']'); 
-    nv._ccn = line.substr(pos1 + 1, pos2 - pos1 - 1);
+class NhanVienKyThuat : public NhanVien
+{
+private:
+    string _ccn;
+    int _sangKien;
 
-    int pos3 = line.find('<'); 
-    int pos4 = line.find('>'); 
-    nv._sangKien = stoi(line.substr(pos3 + 1, pos4 - pos3 - 1));
+public:
+    friend istream &operator>>(istream &, NhanVienKyThuat &);
+    friend ostream &operator<<(ostream &, const NhanVienKyThuat &);
+};
 
-    // is.seekg(start);
+istream &operator>>(istream &is, NhanVienKyThuat &nvkt)
+{
+    cout << "Nhap ho va ten: ";
+    is >> nvkt._hoTen;
+    cout << "Nhap dia chi: ";
+    is >> nvkt._diaChi;
+    cout << "Nhap loai chung chi nganh: ";
+    is >> nvkt._ccn;
+    cout << "Nhap so luong sang kien trong nam: ";
+    is >> nvkt._sangKien;
 
-    return is; 
-} 
+    return is;
+}
 
-ostream &operator<<(ostream& os, const NhanVienKyThuat& nv){ 
-    os << (NhanVien&)nv << " | CCN: " << nv._ccn << " | Sang kien: " << nv._sangKien; 
-    return os; 
-} 
+ostream &operator<<(ostream &os, const NhanVienKyThuat &nvkt)
+{
+    os << nvkt._hoTen << " " << nvkt._diaChi << " " << nvkt._ccn << " " << nvkt._sangKien << endl;
 
-class CongTy{ 
-    private: 
-    vector<NhanVienThuKy*> _nvtk; 
-    vector<NhanVienKyThuat*> _nvkt; 
-    
-    public: 
-    friend istream &operator>>(istream&, CongTy&); 
-    friend ostream &operator<<(ostream&, const CongTy&);
-    void nhanVienXuanSac();
-    ~CongTy(); 
-}; 
+    return os;
+}
 
-istream &operator>>(istream &is, CongTy &ct){ 
-    streampos start = is.tellg();
+class CongTy
+{
+private:
+    vector<NhanVienThuKy *> _nvtk;
+    vector<NhanVienKyThuat *> _nvkt;
 
-    string line; 
-    while (getline(is, line)){ 
-        if (line.empty()){ 
-            continue;
-        } 
-        
-        int pos = line.find(':'); 
-        if (pos == string::npos){ 
-            continue; 
-        } 
-        
-        string loai = line.substr(0, pos); 
-        if (loai == "nvtk"){ 
-            auto *nv = new NhanVienThuKy;
+public:
+    friend istream &operator>>(istream &, CongTy &);
+    friend ostream &operator<<(ostream &, const CongTy &);
 
-            is.seekg(start); 
-            is >> (NhanVien&)(*nv); 
-            is.seekg(start); 
-            is >> *nv;
+    ~CongTy();
+};
 
-            ct._nvtk.push_back(nv); 
-        } else if (loai == "nvkt"){ 
-            auto *nv = new NhanVienKyThuat;
-
-            is.seekg(start); 
-            is >> (NhanVien&)(*nv); 
-            is.seekg(start); 
-            is >> *nv;
-
-            ct._nvkt.push_back(nv); 
-        } else{ 
-            cout << "Invalid syntax\n"; 
-        } 
-        
-        start = is.tellg(); 
-    }
-    
-    return is; 
-} 
-
-ostream &operator<<(ostream& os, const CongTy& ct){ 
-    os << "--- Danh sach nhan vien thu ky ---\n"; 
-    for (int i = 0; i < ct._nvtk.size(); i++){        
-        os << i + 1 << ": " << *ct._nvtk[i] << "\n"; 
-    }
-    
-    os << "\n--- Danh sach nhan vien ky thuat ---\n"; 
-    for (int i = 0; i < ct._nvkt.size(); i++){
-        os << i + 1 << ": " << *ct._nvkt[i] << "\n";
-    } 
-
-    return os; 
-} 
-
-void CongTy::nhanVienXuanSac(){
-    cout << "\n --- Danh sach nhan vien xuat sac --- \n";
-
-    for (int i = 0; i < _nvtk.size(); i++){
-        if (_nvtk[i]->layBaoCao() >= 12){
-            cout << *_nvtk[i] << endl;
+istream &operator>>(istream &is, CongTy &ct)
+{
+    int size = 0, total = 0;
+    cout << "Nhap so nhan vien thu ky trong cong ty: ";
+    is >> size;
+    total += size;
+    cout << "Nhap so nhan vien ky thuat trong cong ty: ";
+    is >> size;
+    total += size;
+    while (total--)
+    {
+        cout << "Nhap 1 neu la nhan vien thu ky, 2 neu la nhan vien ky thuat: ";
+        int option = 0;
+        is >> option;
+        if (option == 1)
+        {
+            NhanVienThuKy *nvtk = new NhanVienThuKy;
+            is >> *nvtk;
+            ct._nvtk.push_back(nvtk);
+        }
+        else if (option == 2)
+        {
+            NhanVienKyThuat *nvkt = new NhanVienKyThuat;
+            is >> *nvkt;
+            ct._nvkt.push_back(nvkt);
+        }
+        else
+        {
+            cout << "So khong hop le." << endl;
         }
     }
 
-    for (int i = 0; i < _nvkt.size(); i++){
-        if (_nvkt[i]->laySangKien() >= 6){
-            cout << *_nvkt[i] << endl;
-        }
+    return is;
+}
+
+ostream &operator<<(ostream &os, const CongTy &ct)
+{
+    cout << "Cac nhan vien thu ky: " << endl;
+    for (int i = 0; i < ct._nvtk.size(); i++)
+    {
+        cout << i + 1 << ": " << *ct._nvtk[i];
+    }
+
+    cout << "Cac nhan vien ky thuat: " << endl;
+    for (int i = 0; i < ct._nvkt.size(); i++)
+    {
+        cout << i + 1 << ": " << *ct._nvkt[i];
+    }
+
+    return os;
+}
+
+CongTy::~CongTy()
+{
+    for (int i = 0; i < _nvtk.size(); i++)
+    {
+        delete _nvtk[i];
+    }
+
+    for (int i = 0; i < _nvkt.size(); i++)
+    {
+        delete _nvkt[i];
     }
 }
 
-CongTy::~CongTy(){ 
-    for (auto p : _nvtk) delete p;
-    for (auto p : _nvkt) delete p;
-} 
+int main()
+{
+    CongTy ct;
+    cin >> ct;
+    cout << ct;
 
-int main(){ 
-    ifstream fin("input.txt"); 
-    CongTy ct; 
-    fin >> ct;
-
-    ofstream fout("output.txt");
-    fout << ct;
-
-    ct.nhanVienXuanSac();
-    
-    return 0; 
+    return 0;
 }

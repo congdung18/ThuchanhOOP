@@ -1,0 +1,12 @@
+So hinh chu nhat: 2
+Dien tich cac hinh chu nhat: 201.25
+Chu vi cac hinh chu nhat: 82.2
+So hinh tron: 2
+Dien tich cac hinh tron: 3952.94
+Chu vi cac hinh tron: 373.221
+So hinh tam giac: 2
+Dien tich cac hinh tam giac: 22.8229
+Chu vi cac hinh tam giac: 37.7
+So hinh thang vuong: 2
+Dien tich cac hinh thang vuong: 806.675
+Chu vi cac hinh thang vuong: 196.31
